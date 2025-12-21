@@ -15,6 +15,47 @@ import { db } from './firebase';
 
 const TRANSACTIONS_COLLECTION = 'transactions';
 
+// Dummy transactions used when there is no data in Firestore yet.
+// This helps the app show meaningful sample data without requiring manual entry.
+const DUMMY_TRANSACTIONS = [
+  {
+    id: 'dummy-1',
+    category: 'Salary',
+    amount: 3500,
+    type: 'income',
+    date: new Date().toISOString().split('T')[0],
+    remark: 'Monthly salary',
+    source: 'Bank Transfer',
+  },
+  {
+    id: 'dummy-2',
+    category: 'Groceries',
+    amount: 220,
+    type: 'expense',
+    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    remark: 'Weekly grocery shopping',
+    source: 'Debit Card',
+  },
+  {
+    id: 'dummy-3',
+    category: 'Rent',
+    amount: 1200,
+    type: 'expense',
+    date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    remark: 'Apartment rent',
+    source: 'Bank Transfer',
+  },
+  {
+    id: 'dummy-4',
+    category: 'Freelance',
+    amount: 800,
+    type: 'income',
+    date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    remark: 'Side project payment',
+    source: 'PayPal',
+  },
+];
+
 /**
  * Get all transactions for a user
  * @param {string} userId - User ID
@@ -33,6 +74,13 @@ export const subscribeToTransactions = (userId, callback) => {
       id: doc.id,
       ...doc.data(),
     }));
+
+    // If there are no transactions in Firestore yet, fall back to dummy data.
+    if (!transactions.length) {
+      callback(DUMMY_TRANSACTIONS);
+      return;
+    }
+
     callback(transactions);
   });
 };
