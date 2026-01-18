@@ -12,10 +12,20 @@ const Dashboard = () => {
     useFinancialData();
   const { transactions, loading: transactionsLoading } = useTransactions();
 
-  // Calculate percentage changes (mock data for now - in real app, compare with previous period)
-  const balancePercentage = 9; // Mock: +9%
-  const incomePercentage = 5; // Mock: +5%
-  const expensePercentage = -29; // Mock: -29%
+  const getChange = (current, previous) => {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return Math.round(((current - previous) / previous) * 100);
+  };
+
+  const latest = monthlyData?.[monthlyData.length - 1] || { income: 0, expense: 0 };
+  const previous = monthlyData?.[monthlyData.length - 2] || { income: 0, expense: 0 };
+
+  const incomePercentage = getChange(latest.income, previous.income);
+  const expensePercentage = getChange(latest.expense, previous.expense);
+  const balancePercentage = getChange(
+    latest.income - latest.expense,
+    previous.income - previous.expense
+  );
 
   if (loading) {
     return (
@@ -27,9 +37,9 @@ const Dashboard = () => {
 
   return (
     <Layout title="Dashboard">
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <SummaryCard
             title="Total balance"
             amount={totalBalance}
@@ -54,7 +64,7 @@ const Dashboard = () => {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <AnalyticsChart data={monthlyData} />
           <ExpensesChart categoryData={categoryData} />
         </div>
