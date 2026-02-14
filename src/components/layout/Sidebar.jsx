@@ -45,7 +45,7 @@ const Sidebar = ({ onClose }) => {
     <div className="w-64 bg-white border-r border-gray-200 h-full flex flex-col">
       {/* Logo with close button for mobile */}
       <div className="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between">
-        <h1 className="text-lg sm:text-xl font-semibold text-gray-800">Finmag</h1>
+        <h1 className="text-lg sm:text-xl font-semibold text-gray-800">Finance Manager</h1>
         <button
           onClick={onClose}
           className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
